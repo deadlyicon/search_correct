@@ -1,32 +1,48 @@
+const debug = require('debug')('search_correct')
 const puppeteer = require('puppeteer')
 
 module.exports = async function(term){
+  debug(`launching chrome`)
   const browser = await puppeteer.launch({
     ignoreHTTPSErrors: true,
     headless: true,
   });
-  const page = await browser.newPage();
+  try{
+    const page = await browser.newPage()
+    const result = await queryForResult(page, term)
+    return result
+  }catch(error){
+    throw error
+  }finally{
+    await browser.close()
+  }
+}
+
+const queryForResult = async function(page, term){
   const url = `https://duckduckgo.com/?q=${encodeURIComponent(term)}`
   try{
-    await page.goto(url, {timeout: 2000})
+    debug(`navigating to ${url}`)
+    await page.goto(url, {timeout: 5000})
   }catch(error){
-    console.error(`failed to goto url ${url}`)
+    debug(`failed to goto url ${url}`)
     throw error
   }
   try{
-    await page.waitForSelector('.js-spelling-suggestion-link', {timeout: 1000})
+    debug(`waiting for spelling selector`)
+    await page.waitForSelector('.js-spelling-suggestion-link', {timeout: 5000})
   }catch(error){
-    console.error('failed waiting for result selector', error)
+    debug('failed waiting for result selector', error)
     return term
   }
   let node
   try{
-    node = await page.$('.js-spelling-suggestion-link')
+    debug(`getting spelling selector node`)
+    node = await page.$('.js-spelling-suggestion-link', {timeout: 5000})
   }catch(error){
-    console.error('failed looking for result on page')
-    throw error
+    debug('failed looking for result on page')
+    return term
   }
   const result = await page.evaluate(node => node.innerText, node);
-  await browser.close();
+  debug(`found result: ${result}`)
   return result
 }
