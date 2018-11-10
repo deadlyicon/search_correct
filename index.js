@@ -16,8 +16,8 @@ module.exports = async function(term){
   try{
     await page.waitForSelector('.js-spelling-suggestion-link', {timeout: 1000})
   }catch(error){
-    console.error('failed waiting for result selector')
-    throw error
+    console.error('failed waiting for result selector', error)
+    return term
   }
   let node
   try{
