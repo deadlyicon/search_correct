@@ -1,0 +1,17 @@
+{
+  "name": "search_correct",
+  "version": "1.0.0",
+  "description": "turn the input into whatever a search engine auto corrects it to.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bin": {
+    "search_correct": "./search_correct.js"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "puppeteer": "^1.10.0"
+  }
+}
