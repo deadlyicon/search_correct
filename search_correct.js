@@ -12,7 +12,9 @@ const getTerm = function(){
 }
 
 getTerm().then(searchCorrect).then(
-  result => { process.stdout.write(result) },
+  results => {
+    process.stdout.write(results[0] || '')
+  },
   error => {
     console.error(error)
     process.exit(1)

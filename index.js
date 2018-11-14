@@ -8,5 +8,7 @@ module.exports = async function(term){
   const response = await axios.get(url)
   debug(`json: ${response.data}`)
   const $ = cheerio.load(response.data)
-  return $('suggestion').attr('data') || term
+  const results = $('suggestion').map((i,n) => $(n).attr('data')).get()
+  debug(`results: ${JSON.stringify(results)}`)
+  return results
 }
